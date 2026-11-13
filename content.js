@@ -3,7 +3,6 @@
 
   const BOX_SELECTOR = ".ll-dwg-entry-box";
   const ENTRY_SELECTOR = "textarea.ll-dwg-entry, input.ll-dwg-entry";
-
   const handledState = new WeakMap();
 
   function getBoxes() {
@@ -39,7 +38,6 @@
 
     entry.focus({ preventScroll: false });
 
-
     if (typeof entry.setSelectionRange === "function") {
       const end = entry.value.length;
       entry.setSelectionRange(end, end);
@@ -73,7 +71,7 @@
 
     if (handledState.get(box) === state) return;
     handledState.set(box, state);
-.
+
     window.setTimeout(() => {
       if (!box.isConnected || getState(box) !== state) return;
 
@@ -92,6 +90,20 @@
 
     return node && node.closest ? node.closest(BOX_SELECTOR) : null;
   }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+
+    const entry = event.target instanceof Element
+      ? event.target.closest(ENTRY_SELECTOR)
+      : null;
+
+    if (!entry || entry.value.trim() !== "") return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+  }, true);
 
   const observer = new MutationObserver((records) => {
     const affectedBoxes = new Set();
