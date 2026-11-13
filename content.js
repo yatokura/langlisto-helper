@@ -63,7 +63,7 @@
     }
   }
 
-  // fires once per state flip 40ms delay so the dom can chill first
+  // handling all the answers till amount of 4
   function handleBox(box) {
     if (!box || !box.isConnected) return;
 
@@ -74,16 +74,23 @@
       return;
     }
 
-    if (handledState.get(box) === state) return;
-    handledState.set(box, state);
+    if (state === "correct") {
+      if (handledState.get(box) === state) return;
+      handledState.set(box, state);
+
+      window.setTimeout(() => {
+        if (box.isConnected && getState(box) === "correct") {
+          focusNextBox(box);
+        }
+      }, 40);
+
+      return;
+    }
 
     window.setTimeout(() => {
-      if (!box.isConnected || getState(box) !== state) return;
-
-      if (state === "correct") {
-        focusNextBox(box);
-      } else {
-        focusEntry(getEntry(box));
+      if (box.isConnected && getState(box) === "incorrect") {
+        const entry = getEntry(box);
+        if (entry) focusEntry(entry);
       }
     }, 40);
   }
@@ -93,7 +100,13 @@
       node = node && node.parentElement;
     }
 
-    return node && node.closest ? node.closest(BOX_SELECTOR) : null;
+    if (!node) return null;
+
+    const box = node.closest(BOX_SELECTOR);
+    if (box) return box;
+
+    const gap = node.closest(".ll-dwg-gap");
+    return gap ? gap.querySelector(BOX_SELECTOR) : null;
   }
 
   // Enter on an empty box = nope, block it so you don't skip by accident
