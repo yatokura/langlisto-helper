@@ -1,6 +1,7 @@
 (() => {
   "use strict";
 
+
   const BOX_SELECTOR = ".ll-dwg-entry-box";
   const ENTRY_SELECTOR = "textarea.ll-dwg-entry, input.ll-dwg-entry";
   const handledState = new WeakMap();
@@ -13,6 +14,7 @@
     return box ? box.querySelector(ENTRY_SELECTOR) : null;
   }
 
+  // is this box already marked right or wrong?
   function getState(box) {
     if (!box) return null;
 
@@ -33,6 +35,7 @@
     return null;
   }
 
+  // focus the field and drop the caret at the end
   function focusEntry(entry) {
     if (!entry || !entry.isConnected || entry.disabled) return;
 
@@ -44,6 +47,7 @@
     }
   }
 
+  // if the answer is correct  then hop to the next enabled input below
   function focusNextBox(currentBox) {
     const boxes = getBoxes();
     const currentIndex = boxes.indexOf(currentBox);
@@ -59,6 +63,7 @@
     }
   }
 
+  // fires once per state flip 40ms delay so the dom can chill first
   function handleBox(box) {
     if (!box || !box.isConnected) return;
 
@@ -91,6 +96,7 @@
     return node && node.closest ? node.closest(BOX_SELECTOR) : null;
   }
 
+  // Enter on an empty box = nope, block it so you don't skip by accident
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
 
@@ -105,6 +111,7 @@
     event.stopImmediatePropagation();
   }, true);
 
+  // class changes are where correct/incorrect shows up so we watch those
   const observer = new MutationObserver((records) => {
     const affectedBoxes = new Set();
 
