@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Langlisto Auto Focus",
+  "version": "1.0.1",
+  "description": "Automatically focuses the next Langlisto answer field after a correct answer, or returns to an incorrect one.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://app.langlisto.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
