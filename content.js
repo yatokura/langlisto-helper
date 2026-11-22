@@ -25,6 +25,10 @@
       return "correct";
     }
 
+    if (box.querySelector(".ll-dwg-entry.is-revealed")) {
+      return "exhausted";
+    }
+
     if (
       box.classList.contains("is-incorrect") ||
       box.querySelector(".ll-dwg-entry.is-incorrect")
@@ -74,12 +78,12 @@
       return;
     }
 
-    if (state === "correct") {
+    if (state === "correct" || state === "exhausted") {
       if (handledState.get(box) === state) return;
       handledState.set(box, state);
 
       window.setTimeout(() => {
-        if (box.isConnected && getState(box) === "correct") {
+        if (box.isConnected && getState(box) === state) {
           focusNextBox(box);
         }
       }, 40);
